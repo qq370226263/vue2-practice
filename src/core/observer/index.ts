@@ -51,11 +51,13 @@ export class Observer {
 
   constructor(public value: any, public shallow = false, public mock = false) {
     // this.value = value
+    // 添加dep
     this.dep = mock ? mockDep : new Dep()
     this.vmCount = 0
     def(value, '__ob__', this)
     if (isArray(value)) {
       if (!mock) {
+        // 重写数组方法，再监听
         if (hasProto) {
           /* eslint-disable no-proto */
           ;(value as any).__proto__ = arrayMethods
@@ -76,6 +78,7 @@ export class Observer {
        * getter/setters. This method should only be called when
        * value type is Object.
        */
+      //对象递归处理
       const keys = Object.keys(value)
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i]

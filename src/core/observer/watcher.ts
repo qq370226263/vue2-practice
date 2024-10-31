@@ -110,6 +110,7 @@ export default class Watcher implements DepTarget {
     this.expression = __DEV__ ? expOrFn.toString() : ''
     // parse expression for getter
     if (isFunction(expOrFn)) {
+      // 保留 updateComponent 方法
       this.getter = expOrFn
     } else {
       this.getter = parsePath(expOrFn)
@@ -129,12 +130,15 @@ export default class Watcher implements DepTarget {
 
   /**
    * Evaluate the getter, and re-collect dependencies.
+   * 计算getter,重新收集依赖
    */
   get() {
+    // 标记target
     pushTarget(this)
     let value
     const vm = this.vm
     try {
+      // 从重写过的getter获取值（触发依赖）,调用 updateComponent 方法
       value = this.getter.call(vm, vm)
     } catch (e: any) {
       if (this.user) {
@@ -159,7 +163,9 @@ export default class Watcher implements DepTarget {
    */
   addDep(dep: Dep) {
     const id = dep.id
+    // 防止dep添加watch多次
     if (!this.newDepIds.has(id)) {
+      // 给watcher添加dep
       this.newDepIds.add(id)
       this.newDeps.push(dep)
       if (!this.depIds.has(id)) {

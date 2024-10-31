@@ -102,6 +102,7 @@ export function renderMixin(Vue: typeof Component) {
 
   Vue.prototype._render = function (): VNode {
     const vm: Component = this
+    // 拿到 render 函数
     const { render, _parentVnode } = vm.$options
 
     if (_parentVnode && vm._isMounted) {
@@ -126,6 +127,7 @@ export function renderMixin(Vue: typeof Component) {
     try {
       setCurrentInstance(vm)
       currentRenderingInstance = vm
+      // 调用 render 函数得到 Vnode
       vnode = render.call(vm._renderProxy, vm.$createElement)
     } catch (e: any) {
       handleError(e, vm, `render`)

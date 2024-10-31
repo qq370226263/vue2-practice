@@ -16,8 +16,9 @@ let uid = 0
 export function initMixin(Vue: typeof Component) {
   Vue.prototype._init = function (options?: Record<string, any>) {
     const vm: Component = this
-    // a uid
+    // a uid 每一个实例生成uid
     vm._uid = uid++
+    
 
     let startTag, endTag
     /* istanbul ignore if */
@@ -39,6 +40,7 @@ export function initMixin(Vue: typeof Component) {
     vm._scope.parent = undefined
     vm._scope._vm = true
     // merge options
+    // 将一些全局api方法混入到当前实例的$option上
     if (options && options._isComponent) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
@@ -64,7 +66,7 @@ export function initMixin(Vue: typeof Component) {
     initRender(vm)
     callHook(vm, 'beforeCreate', undefined, false /* setContext */)
     initInjections(vm) // resolve injections before data/props
-    initState(vm)
+    initState(vm) // 初始化状态，props，methods，data，computed，watch
     initProvide(vm) // resolve provide after data/props
     callHook(vm, 'created')
 
@@ -74,7 +76,7 @@ export function initMixin(Vue: typeof Component) {
       mark(endTag)
       measure(`vue ${vm._name} init`, startTag, endTag)
     }
-
+    //开始挂载
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
     }

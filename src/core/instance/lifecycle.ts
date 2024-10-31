@@ -63,16 +63,18 @@ export function lifecycleMixin(Vue: typeof Component) {
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
+    // 获取到上一次的 Vnode 用于 diff 对比
     const prevVnode = vm._vnode
     const restoreActiveInstance = setActiveInstance(vm)
+    // 保存 vnode
     vm._vnode = vnode
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     if (!prevVnode) {
-      // initial render
+      // initial render  首次渲染
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
-      // updates
+      // updates  数据更新视图
       vm.$el = vm.__patch__(prevVnode, vnode)
     }
     restoreActiveInstance()
@@ -174,10 +176,12 @@ export function mountComponent(
       }
     }
   }
+  //渲染之前调用 beforeMount 生命周期
   callHook(vm, 'beforeMount')
 
   let updateComponent
   /* istanbul ignore if */
+  //创建一个更新渲染函数 （ 用来得到 Vnode 渲染真实 dom ）
   if (__DEV__ && config.performance && mark) {
     updateComponent = () => {
       const name = vm._name
@@ -200,7 +204,7 @@ export function mountComponent(
       vm._update(vm._render(), hydrating)
     }
   }
-
+  //生成一个渲染 watcher 每次页面依赖的数据更新后会调用 updateComponent 进行渲染
   const watcherOptions: WatcherOptions = {
     before() {
       if (vm._isMounted && !vm._isDestroyed) {
@@ -237,6 +241,7 @@ export function mountComponent(
   // manually mounted instance, call mounted on self
   // mounted is called for render-created child components in its inserted hook
   if (vm.$vnode == null) {
+    //渲染真实 dom 结束后调用 mounted 生命周期
     vm._isMounted = true
     callHook(vm, 'mounted')
   }

@@ -806,7 +806,7 @@ export function createPatchFunction(backend) {
 
     let isInitialPatch = false
     const insertedVnodeQueue: any[] = []
-
+    // 首次渲染使用 Vnode 创建真实 dom
     if (isUndef(oldVnode)) {
       // empty mount (likely as component), create new root element
       isInitialPatch = true

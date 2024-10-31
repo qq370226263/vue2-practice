@@ -1,3 +1,4 @@
+// watcher deep - 数组循环，对象递归，深入监听
 import { _Set as Set, isObject, isArray } from '../util/index'
 import type { SimpleSet } from '../util/index'
 import VNode from '../vdom/vnode'
